@@ -12,7 +12,6 @@ export default createStore({
       if (localStorage.getItem("token")) {
         state.token = localStorage.getItem("token");
         state.username = localStorage.getItem("username");
-        console.log("L1: " + state.username);
         state.isAuthenticated = true;
       } else {
         state.token = "";

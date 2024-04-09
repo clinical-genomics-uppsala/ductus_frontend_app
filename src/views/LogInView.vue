@@ -51,9 +51,6 @@ export default {
       password: "",
     };
   },
-  beforeCreate() {
-    console.log(this.$store.state.isAuthenticated);
-  },
   computed: {
     isAuthenticated() {
       return this.$store.state.isAuthenticated;
@@ -65,7 +62,6 @@ export default {
   methods: {
     logout() {
       const token = this.$store.state.token;
-      axios.defaults.headers.common["Authorization"] = "Token " + token;
 
       axios
         .post("api/v1/token/logout/")
@@ -89,7 +85,7 @@ export default {
         .post("api/v1/token/login", formData)
         .then((response) => {
           const token = response.data.auth_token;
-          console.log(token + " " + formData.username);
+
           this.$store.commit("setToken", token, formData.username);
           this.$store.commit("setUsername", formData.username);
 
