@@ -1,20 +1,28 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
+import DashboardView from "../views/DashboardView.vue";
+import LogInView from "../views/LogInView.vue";
+import store from "../store/index.js";
 
 const routes = [
   {
     path: "/",
-    name: "home",
-    component: HomeView,
+    redirect: "/dashboard",
   },
   {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+    path: "/log-in",
+    name: "LogIn",
+    component: LogInView,
+    meta: {
+      requiresAuth: false,
+    },
+  },
+  {
+    path: "/dashboard",
+    name: "dashboard",
+    component: DashboardView,
+    meta: {
+      requiresAuth: true,
+    },
   },
 ];
 
@@ -23,4 +31,18 @@ const router = createRouter({
   routes,
 });
 
+router.beforeEach(async (to, from, next) => {
+  // redirect to login page if not logged in and trying to access a restricted page
+  if (to.meta.requiresAuth) {
+    const isAuthenticated = store.state.isAuthenticated;
+
+    if (isAuthenticated) {
+      next();
+    } else {
+      next({ path: "/log-in", query: { redirect: to.fullPath } });
+    }
+  } else {
+    next();
+  }
+});
 export default router;
