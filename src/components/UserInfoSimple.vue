@@ -21,7 +21,6 @@ export default {
     logout() {
       const token = this.$store.state.token;
       const username = this.$store.state.token;
-      axios.defaults.headers.common["Authorization"] = "Token " + token;
 
       axios
         .post("api/v1/token/logout/")
