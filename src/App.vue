@@ -25,11 +25,23 @@ export default {
 
     const token = this.$store.state.token;
 
-    if (token) {
-      axios.defaults.headers.common["Authorization"] = "Token " + token;
-    } else {
-      axios.defaults.headers.common["Authorization"] = "";
-    }
+    axios
+      .get("api/v1/users/me/", { headers: { Authorization: "Token " + token } })
+      .then(() => {
+        axios.defaults.headers.common["Authorization"] = "Token " + token;
+      })
+      .catch((error) => {
+        console.debug("Invalid token: " + error);
+
+        this.$store.commit("removeToken");
+
+        axios.defaults.headers.common["Authorization"] = "";
+
+        localStorage.removeItem("token", token);
+        localStorage.removeItem("username", this.username);
+
+        this.$router.push({ name: "LogIn" });
+      });
   },
   computed: {
     isAuthenticated() {
