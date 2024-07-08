@@ -26,9 +26,9 @@ export default {
     const token = this.$store.state.token;
 
     axios
-      .get("api/v1/users/me/", { headers: { Authorization: "Token " + token } })
+      .get("api/v1/users/me/")
       .then(() => {
-        axios.defaults.headers.common["Authorization"] = "Token " + token;
+        console.debug("User authenticated");
       })
       .catch((error) => {
         console.debug("Invalid token: " + error);
