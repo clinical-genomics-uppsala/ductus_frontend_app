@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.1.1](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/compare/v0.1.0...v0.1.1) (2024-07-09)
+
+
+### Bug Fixes
+
+* change to correct repo ([9234749](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/commit/9234749e40d82c3cf3150890323f8e67a5c6ecac))
+
 ## 0.1.0 (2024-07-09)
 
 
