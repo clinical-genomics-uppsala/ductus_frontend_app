@@ -31,7 +31,7 @@ jobs:
         uses: elgohr/Publish-Docker-Github-Action@2.16
         if: ${{ steps.release.outputs.release_created }}
         with:
-          name: gmsuppsala/ductus_processing_api
+          name: gmsuppsala/ductus_frontend_app
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
           tags: "v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }},stable"
