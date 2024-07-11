@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createMemoryHistory } from "vue-router";
 import DashboardView from "../views/DashboardView.vue";
 import LogInView from "../views/LogInView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
@@ -22,23 +22,31 @@ const routes = [
     },
   },
   {
+    path: "/",
+    redirect: "/dashboard",
+    meta: {
+      requiresAuth: false,
+    },
+  },
+  {
     path: "/:pathMatch(.*)*",
     name: "404",
     component: NotFoundView,
-  },
-  {
-    path: "/",
-    redirect: "/dashboard",
+    meta: {
+      requiresAuth: false,
+    },
   },
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  mode: "history",
+  history: createMemoryHistory(),
   routes,
 });
 
 router.beforeEach(async (to, from, next) => {
   // redirect to login page if not logged in and trying to access a restricted page
+  console.log({ to, from });
   if (to.meta.requiresAuth) {
     const isAuthenticated = store.state.isAuthenticated;
 
