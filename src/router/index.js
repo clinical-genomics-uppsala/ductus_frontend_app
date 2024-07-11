@@ -1,13 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 import DashboardView from "../views/DashboardView.vue";
 import LogInView from "../views/LogInView.vue";
+import NotFoundView from "../views/NotFoundView.vue";
 import store from "../store/index.js";
 
 const routes = [
-  {
-    path: "/",
-    redirect: "/dashboard",
-  },
   {
     path: "/log-in",
     name: "LogIn",
@@ -23,6 +20,15 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "404",
+    component: NotFoundView,
+  },
+  {
+    path: "/",
+    redirect: "/dashboard",
   },
 ];
 
