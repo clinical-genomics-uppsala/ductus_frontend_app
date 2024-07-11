@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.0](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/compare/v0.1.1...v0.2.0) (2024-07-11)
+
+
+### Features
+
+* add 404 page and restructure routes ([e44c77d](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/commit/e44c77d9d537e72544633e1f386b260c363d7e22))
+* update dockerfile and change from CreateWebHistory to creatememoryhistory ([0d0f5e3](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/commit/0d0f5e3e4e0eb5640eecc2a8a1facc68c3e4286c))
+
 ### [0.1.1](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/compare/v0.1.0...v0.1.1) (2024-07-09)
 
 
