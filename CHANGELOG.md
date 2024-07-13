@@ -1,5 +1,13 @@
 # Changelog
 
+### [0.3.1](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/compare/v0.3.0...v0.3.1) (2024-07-13)
+
+
+### Bug Fixes
+
+* change history ([d843320](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/commit/d843320f00df9a887e4dd86b1744ca56a957f1f9))
+* update docker build file ([6c969c5](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/commit/6c969c55e458c5a956e62ec5d14b0d7452c1c4f7))
+
 ## [0.3.0](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/compare/v0.2.0...v0.3.0) (2024-07-13)
 
 
