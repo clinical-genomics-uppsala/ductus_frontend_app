@@ -11,23 +11,39 @@
         <h5 class="card-title">
           {{ sequencerun.run_id }}
         </h5>
-        <h6 class="card-title">runfolder name</h6>
+        <p>
+          <small>
+            <strong>runfolder name</strong>
+          </small>
+        </p>
         <hr />
         <div class="row">
           <div class="col-sm">
             {{ sequencerun.flowcell }}
             <br />
-            <p class="fs-7">Flowcell</p>
+            <p>
+              <small>
+                <strong>Flowcell</strong>
+              </small>
+            </p>
           </div>
           <div class="col-sm">
             {{ sequencerun.machine_id }}
             <br />
-            <p class="fs-7">ID</p>
+            <p>
+              <small>
+                <strong>ID</strong>
+              </small>
+            </p>
           </div>
           <div class="col-sm">
             {{ sequencerun.machine_type }}
             <br />
-            <p class="fs-7">Type</p>
+            <p>
+              <small>
+                <strong>Type</strong>
+              </small>
+            </p>
           </div>
         </div>
         <hr />
@@ -50,11 +66,7 @@
               <tr v-for="analysis in analyzes" :key="analysis.analysis_name">
                 <td>{{ analysis.analysis_name }}</td>
                 <td class="text-center">
-                  <i
-                    v-if="analysis.use_for_archive_settings"
-                    class="bi bi-check"
-                  >
-                  </i>
+                  {{ analysis.use_for_archive_settings }}
                 </td>
               </tr>
             </table>

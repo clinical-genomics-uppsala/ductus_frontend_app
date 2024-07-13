@@ -12,7 +12,11 @@
       </thead>
       <tbody>
         <tr v-for="(item, index) in analysis" :key="index">
-          <td>{{ item.analysis_name }}</td>
+          <td>
+            <a :href="`/analysis/${item.analysis_name}`">{{
+              item.analysis_name
+            }}</a>
+          </td>
           <td>{{ item.analysis }}</td>
           <td>{{ item.created_date }}</td>
           <td>{{ item.last_update }}</td>
