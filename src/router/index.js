@@ -49,7 +49,7 @@ const routes = [
   },
   {
     path: "/:pathMatch(.*)*",
-    name: "404",
+    name: "4044",
     component: NotFoundView,
     meta: {
       requiresAuth: false,
