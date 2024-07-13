@@ -104,8 +104,10 @@ export default {
       },
       archive_status: {
         NA: "Not Archived",
-        BE: "Being Archived",
-        AC: "Archived",
+        BA: "Being Archived",
+        AD: "Archiving Done",
+        FA: "Failed archiving",
+        AI: "Do not archive",
       },
     };
   },
