@@ -27,5 +27,6 @@ FROM node:16-alpine AS production-stage
 WORKDIR /app
 RUN npm install -g http-server
 COPY --from=build-stage /app/dist /app/dist
+COPY dockerfiles/serve.json /app/serve.json
 EXPOSE 8080
-CMD ["http-server", "dist"]
+CMD ["serve", "-s",  "dist", "-l", "8080", "-c", "serve.json"]
