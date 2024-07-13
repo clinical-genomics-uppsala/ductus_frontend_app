@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.0](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/compare/v0.2.0...v0.3.0) (2024-07-13)
+
+
+### Features
+
+* make it possible to view sequence run information ([79dc599](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/commit/79dc599081103b273c946a9fbb17f92931e84fd8))
+
+
+### Bug Fixes
+
+* change webb history module ([fce43a1](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/commit/fce43a13c84bacdde39f0543f1bbb03c02a6ead5))
+* remove auto build of docker container, since they need to be built for each deployment. Also update dockerfile to make it easier to build new container for a deployment. ([6a9d9bd](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/commit/6a9d9bd16e1c3cb11fb42412261bedf7ee9cbe01))
+
 ## [0.2.0](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/compare/v0.1.1...v0.2.0) (2024-07-11)
 
 
