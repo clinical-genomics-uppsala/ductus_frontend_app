@@ -16,7 +16,9 @@
           <td>{{ item.date }}</td>
           <td>{{ item.machine_type }}</td>
           <td>{{ item.machine_id }}</td>
-          <td>{{ item.run_id }}</td>
+          <td>
+            <a :href="`/sequencerun/${item.run_id}`">{{ item.run_id }}</a>
+          </td>
           <td>{{ item.demultiplex }}</td>
           <td>{{ item.archive_status }}</td>
         </tr>

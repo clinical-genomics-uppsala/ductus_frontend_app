@@ -1,7 +1,9 @@
-import { createRouter, createMemoryHistory } from "vue-router";
-import DashboardView from "../views/DashboardView.vue";
-import LogInView from "../views/LogInView.vue";
-import NotFoundView from "../views/NotFoundView.vue";
+//import { createRouter, createMemoryHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
+import DashboardView from "@/views/DashboardView.vue";
+import LogInView from "@/views/LogInView.vue";
+import NotFoundView from "@/views/NotFoundView.vue";
+import SequenceRunView from "@/views/SequenceRunView.vue";
 import store from "../store/index.js";
 
 const routes = [
@@ -17,6 +19,14 @@ const routes = [
     path: "/dashboard",
     name: "dashboard",
     component: DashboardView,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/sequencerun/:id",
+    name: "SequenceRun",
+    component: SequenceRunView,
     meta: {
       requiresAuth: true,
     },
@@ -40,7 +50,7 @@ const routes = [
 
 const router = createRouter({
   mode: "history",
-  history: createMemoryHistory(),
+  history: createWebHistory(),
   routes,
 });
 
