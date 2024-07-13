@@ -1,5 +1,6 @@
 //import { createRouter, createMemoryHistory } from "vue-router";
 import { createRouter, createWebHistory } from "vue-router";
+import AnalysisView from "@/views/AnalysisView.vue";
 import DashboardView from "@/views/DashboardView.vue";
 import LogInView from "@/views/LogInView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
@@ -27,6 +28,14 @@ const routes = [
     path: "/sequencerun/:id",
     name: "SequenceRun",
     component: SequenceRunView,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/analysis/:id",
+    name: "Analysis",
+    component: AnalysisView,
     meta: {
       requiresAuth: true,
     },
