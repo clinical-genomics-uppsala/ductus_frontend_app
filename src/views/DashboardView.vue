@@ -239,10 +239,7 @@ export default {
     };
   },
   created() {
-    console.log("CREATED");
-
     this.getStatistics();
-    //this.getAnalysisDelivered();
   },
   methods: {
     async getStatistics() {
