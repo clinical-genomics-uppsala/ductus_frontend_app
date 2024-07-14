@@ -68,7 +68,10 @@ export default {
   methods: {
     async getAnalysisSamples() {
       await axios
-        .get("api/v1/analysis/samples/?analysis_name__in=" + this.analysis_name)
+        .get(
+          "api/v1/analysis/samples/?analysis_id__analysis_name=" +
+            this.analysis_name
+        )
         .then((response) => {
           this.analysis_samples = response.data;
         })
