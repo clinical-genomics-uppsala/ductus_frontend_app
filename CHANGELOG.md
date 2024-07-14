@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/compare/v0.3.1...v0.4.0) (2024-07-14)
+
+
+### Features
+
+* improve UI regarding archivingn, assigned analysis and running processes. ([a133ab5](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/commit/a133ab5faedfa9ff4410c9b4cb7d1f63b5b1fda2))
+
 ### [0.3.1](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/compare/v0.3.0...v0.3.1) (2024-07-13)
 
 
