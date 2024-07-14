@@ -80,6 +80,29 @@
               </tr>
             </tbody>
           </table>
+
+          <table
+            v-if="assigned_analysis_na || assigned_analysis_pa"
+            class="table"
+          >
+            <thead>
+              <tr>
+                <th scope="col" colspan="4">Analysis assigned</th>
+              </tr>
+              <tr>
+                <th scope="col">Assigned</th>
+                <th scope="col">Partially assigned</th>
+                <th scope="col">Not assigned</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ assigned_analysis_as }}</td>
+                <td>{{ assigned_analysis_pa }}</td>
+                <td>{{ assigned_analysis_na }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
       <br />
@@ -149,11 +172,15 @@
         </h2>
         <div class="collapse show" id="notHandled">
           <div class="card card-body">
-            <h4 v-if="not_archived_count">Archiving</h4>
+            <h4 v-if="assigned_analysis_pa || assigned_analysis_na">
+              Not/Partially assigned bioinformatic samplesheet
+            </h4>
             <SequenceRunTable
-              assigned_analysis="NA"
-              v-if="not_archived_count"
+              assigned_analysis="NA,PA"
+              v-if="assigned_analysis_pa || assigned_analysis_na"
             />
+            <h4 v-if="not_archived_count">Not archived</h4>
+            <SequenceRunTable archive_status="NA" v-if="not_archived_count" />
             <h4 v-if="analysis_wp || analysis_ws">Analyzes</h4>
             <AnalysisTable
               v-if="analysis_wp || analysis_ws"
@@ -164,9 +191,9 @@
         </div>
       </div>
 
-      <div v-if="analysis_re || analysis_pr || analysis_ad">
+      <div v-if="analysis_re || analysis_pr || analysis_ad || archiving_count">
         <h2>
-          Analysis being processed
+          Process running
           <button
             class="btn btn-link"
             type="button"
@@ -180,7 +207,14 @@
         </h2>
         <div class="collapse show" id="processing">
           <div class="card card-body">
-            <AnalysisTable analysis_status="RE,PR,AD" />
+            <div v-if="analysis_re || analysis_pr || analysis_ad">
+              <h4>Analyzes</h4>
+              <AnalysisTable analysis_status="RE,PR,AD" />
+            </div>
+            <div v-if="archiving_count">
+              <h4>Archiving</h4>
+              <SequenceRunTable archive_status="BA" />
+            </div>
           </div>
         </div>
       </div>
@@ -231,6 +265,9 @@ export default {
       analysis_ad: 0,
       analysis_dd: 0,
       analysis_fa: 0,
+      assigned_analysis_as: 0,
+      assigned_analysis_pa: 0,
+      assigned_analysis_na: 0,
       archived_count: 0,
       archiving_count: 0,
       failed_archive_count: 0,
@@ -262,6 +299,9 @@ export default {
           this.analysis_ad = response.data.analysis_count.AD;
           this.analysis_dd = response.data.analysis_count.DD;
           this.analysis_fa = response.data.analysis_count.FA;
+          this.assigned_analysis_as = response.data.assigned_analysis_count.AS;
+          this.assigned_analysis_pa = response.data.assigned_analysis_count.PA;
+          this.assigned_analysis_na = response.data.assigned_analysis_count.NA;
         })
         .catch((error) => console.log(error));
     },

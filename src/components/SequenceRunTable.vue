@@ -8,6 +8,7 @@
           <th scope="col">Machine Id</th>
           <th scope="col">Folder Name</th>
           <th scope="col">Demultiplex</th>
+          <th scope="col">Assigned Analysis</th>
           <th scope="col">Archive status</th>
         </tr>
       </thead>
@@ -20,7 +21,14 @@
             <a :href="`/sequencerun/${item.run_id}`">{{ item.run_id }}</a>
           </td>
           <td>{{ item.demultiplex }}</td>
-          <td>{{ item.archive_status }}</td>
+          <td>
+            {{
+              assigned_status_dict[
+                item.assigned_bionformatic_samplesheet_status
+              ]
+            }}
+          </td>
+          <td>{{ archive_status_dict[item.archive_status] }}</td>
         </tr>
       </tbody>
     </table>
@@ -34,6 +42,18 @@ export default {
   name: "SequenceRunTable",
   data() {
     return {
+      assigned_status_dict: {
+        AS: "Assigned",
+        PA: "Partial assigned",
+        NA: "Not assigned",
+      },
+      archive_status_dict: {
+        NA: "Not archived",
+        BA: "Being archived",
+        FA: "Failed archiving",
+        AD: "Archived done",
+        AI: "Do not archive",
+      },
       sequence_runs: [],
     };
   },
