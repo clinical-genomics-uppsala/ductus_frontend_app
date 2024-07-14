@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.4.1](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/compare/v0.4.0...v0.4.1) (2024-07-14)
+
+
+### Bug Fixes
+
+* change to correct url for fetching analysis samples ([da47cb3](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/commit/da47cb34b26cf201bcd9ef932a874db07df9a22e))
+
 ## [0.4.0](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/compare/v0.3.1...v0.4.0) (2024-07-14)
 
 
