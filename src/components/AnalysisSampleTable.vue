@@ -22,9 +22,13 @@
                 </a>
               </td>
               <td>
-                <a :href="`/sequencerun/${sample.sample_id.sequence_run}`">
-                  {{ sample.sample_id.sequence_run }}
+                <a
+                  v-if="sample.sample_id.sequence_run"
+                  :href="`/sequencerun/${sample.sample_id.sequence_run.run_id}`"
+                >
+                  {{ sample.sample_id.sequence_run.run_id }}
                 </a>
+                <span v-else>—</span>
               </td>
               <td>{{ sample.settings }}</td>
               <td>

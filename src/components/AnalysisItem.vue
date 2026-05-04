@@ -49,11 +49,11 @@
         <hr />
         <div class="row">
           <div class="col-sm">
-            {{ analysis.use_for_archive_settings }}
+            {{ archive_status_name[analysis.archive_status] }}
             <br />
             <p>
               <small>
-                <strong>Used for archiving</strong>
+                <strong>Archive status</strong>
               </small>
             </p>
           </div>
@@ -117,12 +117,23 @@ export default {
       },
       analysis_status_name: {
         WS: "Waiting for sequencing",
+        SC: "Sequencing completed",
         WP: "Waiting for processing",
         RE: "Reserved for processing",
         PR: "Processing",
         AC: "Analysis completed",
         DD: "Data delivered",
         FA: "Processing failed",
+        PD: "Partial demultiplexed",
+      },
+      archive_status_name: {
+        AI: "Do not use for archiving",
+        WS: "Waiting for sequence data",
+        PS: "Partial sequenced data",
+        WA: "Waiting for archiving",
+        BA: "Being archived",
+        FA: "Failed archiving",
+        AD: "Archived done",
       },
       priority: {
         "1-N": "Normal",
