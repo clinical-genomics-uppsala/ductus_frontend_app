@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/compare/v0.4.1...v0.5.0) (2026-05-08)
+
+
+### Features
+
+* update status codes and field names to match updated backend API ([d76cd72](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/commit/d76cd72129dbe53b691bc61e89b4adc2961b3710))
+
 ### [0.4.1](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/compare/v0.4.0...v0.4.1) (2024-07-14)
 
 
