@@ -39,12 +39,14 @@ export default {
       analysis: [],
       analysis_status_name: {
         WS: "Waiting for sequencing",
+        SC: "Sequencing completed",
         WP: "Waiting for processing",
         RE: "Reserved for processing",
         PR: "Processing",
         AC: "Analysis completed",
         DD: "Data delivered",
         FA: "Processing failed",
+        PD: "Partial demultiplexed",
       },
     };
   },
@@ -59,7 +61,6 @@ export default {
     },
   },
   created() {
-    console.log("CREATED");
     this.getAnalysis();
   },
   methods: {

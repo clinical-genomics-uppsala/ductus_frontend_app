@@ -49,7 +49,7 @@ export default {
       },
       archive_status_dict: {
         NA: "Not archived",
-        BA: "Being archived",
+        PA: "Partially archived",
         FA: "Failed archiving",
         AD: "Archived done",
         AI: "Do not archive",

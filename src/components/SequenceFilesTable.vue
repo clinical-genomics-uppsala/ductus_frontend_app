@@ -36,7 +36,7 @@
               </a>
             </td>
           </tr>
-          <tr v-if="sequence_file.fastqfiles_set == 0">
+          <tr v-if="sequence_file.fastqfiles_set.length === 0">
             <td class="table-warning" colspan="4">No files added!</td>
           </tr>
           <tr v-else>

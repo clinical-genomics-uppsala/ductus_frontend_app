@@ -23,38 +23,40 @@
               </tr>
               <tr>
                 <th scope="col">Waiting for Sequencing</th>
+                <th scope="col">Sequencing Completed</th>
                 <th scope="col">Unprocessed</th>
                 <th scope="col">Reserved</th>
                 <th scope="col">Processing</th>
                 <th scope="col">Done</th>
-                <th scope="col">Deliverd</th>
+                <th scope="col">Delivered</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>{{ analysis_ws }}</td>
+                <td>{{ analysis_sc }}</td>
                 <td>{{ analysis_wp }}</td>
                 <td>{{ analysis_re }}</td>
                 <td>{{ analysis_pr }}</td>
-                <td>{{ analysis_ad }}</td>
+                <td>{{ analysis_ac }}</td>
                 <td>{{ analysis_dd }}</td>
               </tr>
             </tbody>
           </table>
-          <table v-if="analysis_fa || analysis_pa" class="table">
+          <table v-if="analysis_fa || analysis_pd" class="table">
             <thead>
               <tr>
                 <th scope="col" colspan="6">Processing Failures</th>
               </tr>
               <tr>
                 <th scope="col">Failed</th>
-                <th scope="col" colspan="5">Partial Sequenced</th>
+                <th scope="col" colspan="5">Partial Demultiplexed</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>{{ analysis_fa }}</td>
-                <td>{{ analysis_pa }}</td>
+                <td>{{ analysis_pd }}</td>
               </tr>
             </tbody>
           </table>
@@ -67,7 +69,7 @@
               <tr>
                 <th scope="col">Done</th>
                 <th scope="col">Not Archived</th>
-                <th scope="col">Archiving</th>
+                <th scope="col">Partially Archived</th>
                 <th scope="col">Failed</th>
               </tr>
             </thead>
@@ -75,7 +77,7 @@
               <tr>
                 <td>{{ archived_count }}</td>
                 <td>{{ not_archived_count }}</td>
-                <td>{{ archiving_count }}</td>
+                <td>{{ partially_archived_count }}</td>
                 <td>{{ failed_archive_count }}</td>
               </tr>
             </tbody>
@@ -108,7 +110,7 @@
       <br />
       <hr class="hr" />
       <h1>Sequence Runs and Analyzes</h1>
-      <div v-if="analysis_ws || analysis_pa">
+      <div v-if="analysis_ws || analysis_pd">
         <h2>
           Waiting for fastq-files
           <button
@@ -124,7 +126,7 @@
         </h2>
         <div class="collapse show" id="waitintforfastq">
           <div class="card card-body">
-            <AnalysisTable analysis_status="WS,PA" />
+            <AnalysisTable analysis_status="WS,PD" />
           </div>
         </div>
       </div>
@@ -156,7 +158,15 @@
         </div>
       </div>
 
-      <div v-if="not_archived_count || analysis_ws || analysis_wp">
+      <div
+        v-if="
+          not_archived_count ||
+          analysis_ws ||
+          analysis_wp ||
+          analysis_sc ||
+          analysis_pd
+        "
+      >
         <h2>
           Not handled
           <button
@@ -181,17 +191,23 @@
             />
             <h4 v-if="not_archived_count">Not archived</h4>
             <SequenceRunTable archive_status="NA" v-if="not_archived_count" />
-            <h4 v-if="analysis_wp || analysis_ws">Analyzes</h4>
+            <h4 v-if="analysis_wp || analysis_ws || analysis_sc || analysis_pd">
+              Analyzes
+            </h4>
             <AnalysisTable
-              v-if="analysis_wp || analysis_ws"
+              v-if="analysis_wp || analysis_ws || analysis_sc || analysis_pd"
               title="Analysis"
-              analysis_status="WS,WP"
+              analysis_status="WS,SC,WP,PD"
             />
           </div>
         </div>
       </div>
 
-      <div v-if="analysis_re || analysis_pr || analysis_ad || archiving_count">
+      <div
+        v-if="
+          analysis_re || analysis_pr || analysis_ac || partially_archived_count
+        "
+      >
         <h2>
           Process running
           <button
@@ -207,13 +223,13 @@
         </h2>
         <div class="collapse show" id="processing">
           <div class="card card-body">
-            <div v-if="analysis_re || analysis_pr || analysis_ad">
+            <div v-if="analysis_re || analysis_pr || analysis_ac">
               <h4>Analyzes</h4>
-              <AnalysisTable analysis_status="RE,PR,AD" />
+              <AnalysisTable analysis_status="RE,PR,AC" />
             </div>
-            <div v-if="archiving_count">
+            <div v-if="partially_archived_count">
               <h4>Archiving</h4>
-              <SequenceRunTable archive_status="BA" />
+              <SequenceRunTable archive_status="PA" />
             </div>
           </div>
         </div>
@@ -258,18 +274,19 @@ export default {
       analysis: [],
       archive: [],
       analysis_ws: 0,
+      analysis_sc: 0,
       analysis_wp: 0,
       analysis_re: 0,
-      analysis_pa: 0,
+      analysis_pd: 0,
       analysis_pr: 0,
-      analysis_ad: 0,
+      analysis_ac: 0,
       analysis_dd: 0,
       analysis_fa: 0,
       assigned_analysis_as: 0,
       assigned_analysis_pa: 0,
       assigned_analysis_na: 0,
       archived_count: 0,
-      archiving_count: 0,
+      partially_archived_count: 0,
       failed_archive_count: 0,
       not_archived_count: 0,
       analysis_delivered: [],
@@ -284,21 +301,19 @@ export default {
         .get("api/v1/statistics/counts/")
         .then((response) => {
           //console.log(response.data);
-          this.sequence_runs = response.data.sequence_runs;
-          this.analysis = response.data.analysis;
-          this.archive = response.data.archive;
           this.archived_count = response.data.archive_count.AD;
-          this.archiving_count = response.data.archive_count.BA;
+          this.partially_archived_count = response.data.archive_count.PA;
           this.failed_archive_count = response.data.archive_count.FA;
           this.not_archived_count = response.data.archive_count.NA;
-          this.analysis_pa = response.data.analysis_count.PA;
           this.analysis_ws = response.data.analysis_count.WS;
+          this.analysis_sc = response.data.analysis_count.SC;
           this.analysis_wp = response.data.analysis_count.WP;
           this.analysis_re = response.data.analysis_count.RE;
           this.analysis_pr = response.data.analysis_count.PR;
-          this.analysis_ad = response.data.analysis_count.AD;
+          this.analysis_ac = response.data.analysis_count.AC;
           this.analysis_dd = response.data.analysis_count.DD;
           this.analysis_fa = response.data.analysis_count.FA;
+          this.analysis_pd = response.data.analysis_count.PD;
           this.assigned_analysis_as = response.data.assigned_analysis_count.AS;
           this.assigned_analysis_pa = response.data.assigned_analysis_count.PA;
           this.assigned_analysis_na = response.data.assigned_analysis_count.NA;

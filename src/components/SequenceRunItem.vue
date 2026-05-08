@@ -61,12 +61,12 @@
             <table v-if="analyzes">
               <tr>
                 <th>Analysis</th>
-                <th>Used for archiving</th>
+                <th>Archive status</th>
               </tr>
               <tr v-for="analysis in analyzes" :key="analysis.analysis_name">
                 <td>{{ analysis.analysis_name }}</td>
                 <td class="text-center">
-                  {{ analysis.use_for_archive_settings }}
+                  {{ archive_status_name[analysis.archive_status] }}
                 </td>
               </tr>
             </table>
@@ -101,11 +101,23 @@ export default {
         NA: "Not Assigned",
         PA: "Partial Assigned",
         AS: "Assigned",
+        NE: "No samplesheet expected",
+      },
+      archive_status_name: {
+        AI: "Do not use for archiving",
+        WS: "Waiting for sequence data",
+        PS: "Partial sequenced data",
+        WA: "Waiting for archiving",
+        BA: "Being archived",
+        FA: "Failed archiving",
+        AD: "Archived done",
       },
       archive_status: {
-        NA: "Not Archived",
-        BE: "Being Archived",
-        AC: "Archived",
+        NA: "Not archived",
+        PA: "Partially archived",
+        AD: "Archived done",
+        AI: "Do not archive",
+        FA: "Failed archiving",
       },
     };
   },
@@ -129,7 +141,6 @@ export default {
         .catch((error) => console.log(error));
     },
     async getAnalsysis() {
-      console.log("api/v1/sequencerun/analysis/" + this.sequencerun_id + "/");
       await axios
         .get("api/v1/sequencerun/analysis/" + this.sequencerun_id + "/")
         .then((response) => {
