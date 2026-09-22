@@ -55,9 +55,7 @@ export default {
   data() {
     return {
       api_address: process.env.VUE_APP_API_ADDRESS,
-      analysis_samples: {
-        type: Array,
-      },
+      analysis_samples: [],
     };
   },
   props: {
@@ -77,7 +75,7 @@ export default {
             this.analysis_name
         )
         .then((response) => {
-          this.analysis_samples = response.data;
+          this.analysis_samples = response.data.results;
         })
         .catch((error) => console.log(error));
     },

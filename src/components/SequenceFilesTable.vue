@@ -76,9 +76,7 @@ export default {
   data() {
     return {
       api_address: process.env.VUE_APP_API_ADDRESS,
-      sequence_samples: {
-        type: Array,
-      },
+      sequence_samples: [],
     };
   },
   props: {
@@ -98,7 +96,7 @@ export default {
             this.sequencerun_id
         )
         .then((response) => {
-          this.sequence_samples = response.data;
+          this.sequence_samples = response.data.results;
         })
         .catch((error) => console.log(error));
     },

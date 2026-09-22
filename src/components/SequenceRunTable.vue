@@ -23,12 +23,12 @@
           <td>{{ item.demultiplex }}</td>
           <td>
             {{
-              assigned_status_dict[
+              assignedSamplesheetStatusName[
                 item.assigned_bionformatic_samplesheet_status
               ]
             }}
           </td>
-          <td>{{ archive_status_dict[item.archive_status] }}</td>
+          <td>{{ runArchiveStatusName[item.archive_status] }}</td>
         </tr>
       </tbody>
     </table>
@@ -37,23 +37,17 @@
 
 <script>
 import axios from "axios";
+import {
+  assignedSamplesheetStatusName,
+  runArchiveStatusName,
+} from "@/constants/statuses";
 
 export default {
   name: "SequenceRunTable",
   data() {
     return {
-      assigned_status_dict: {
-        AS: "Assigned",
-        PA: "Partial assigned",
-        NA: "Not assigned",
-      },
-      archive_status_dict: {
-        NA: "Not archived",
-        PA: "Partially archived",
-        FA: "Failed archiving",
-        AD: "Archived done",
-        AI: "Do not archive",
-      },
+      assignedSamplesheetStatusName,
+      runArchiveStatusName,
       sequence_runs: [],
     };
   },

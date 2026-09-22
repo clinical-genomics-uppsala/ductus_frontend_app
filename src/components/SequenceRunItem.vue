@@ -52,22 +52,60 @@
             <p>
               Assigned bioinformatic SampleSheet:
               {{
-                assigned_bf_samplesheet[
+                assignedSamplesheetStatusName[
                   sequencerun.assigned_bionformatic_samplesheet_status
                 ]
               }}
             </p>
 
-            <table v-if="analyzes">
+            <table v-if="analysis.length" class="table">
               <tr>
-                <th>Analysis</th>
-                <th>Archive status</th>
+                <th>Assigned analysis</th>
+                <th>Status</th>
               </tr>
-              <tr v-for="analysis in analyzes" :key="analysis.analysis_name">
-                <td>{{ analysis.analysis_name }}</td>
-                <td class="text-center">
-                  {{ archive_status_name[analysis.archive_status] }}
+              <tr v-for="a in analysis" :key="a.analysis_name">
+                <td>
+                  <a :href="`/analysis/${a.analysis_name}`">
+                    {{ a.analysis_name }}
+                  </a>
                 </td>
+                <td>{{ analysisStatusName[a.status] }}</td>
+              </tr>
+            </table>
+
+            <table v-if="extra_analysis.length" class="table">
+              <tr>
+                <th>Re-used in (extra analysis)</th>
+                <th>Status</th>
+              </tr>
+              <tr v-for="a in extra_analysis" :key="a.analysis_name">
+                <td>
+                  <a :href="`/analysis/${a.analysis_name}`">
+                    {{ a.analysis_name }}
+                  </a>
+                </td>
+                <td>{{ analysisStatusName[a.status] }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <hr v-if="missingConfigExperiments.length" />
+        <div v-if="missingConfigExperiments.length" class="row">
+          <div class="col-sm">
+            <p class="text-warning">
+              <strong>Samples missing bioinformatics configuration</strong>
+            </p>
+            <table class="table">
+              <tr>
+                <th>Experiment</th>
+                <th>Samples</th>
+              </tr>
+              <tr
+                v-for="experiment in missingConfigExperiments"
+                :key="experiment"
+              >
+                <td>{{ experiment }}</td>
+                <td>{{ missingConfig[experiment].join(", ") }}</td>
               </tr>
             </table>
           </div>
@@ -75,7 +113,8 @@
         <hr />
         <div class="row">
           <div class="col-sm">
-            Archive status: {{ archive_status[sequencerun.archive_status] }}
+            Archive status:
+            {{ runArchiveStatusName[sequencerun.archive_status] }}
           </div>
         </div>
       </div>
@@ -85,41 +124,30 @@
 
 <script>
 import axios from "axios";
+import {
+  analysisStatusName,
+  assignedSamplesheetStatusName,
+  runArchiveStatusName,
+} from "@/constants/statuses";
 
 export default {
   name: "SequenceRunItem",
   data() {
     return {
       api_address: process.env.VUE_APP_API_ADDRESS,
-      analyzes: {
-        type: Object,
-      },
-      sequencerun: {
-        type: Object,
-      },
-      assigned_bf_samplesheet: {
-        NA: "Not Assigned",
-        PA: "Partial Assigned",
-        AS: "Assigned",
-        NE: "No samplesheet expected",
-      },
-      archive_status_name: {
-        AI: "Do not use for archiving",
-        WS: "Waiting for sequence data",
-        PS: "Partial sequenced data",
-        WA: "Waiting for archiving",
-        BA: "Being archived",
-        FA: "Failed archiving",
-        AD: "Archived done",
-      },
-      archive_status: {
-        NA: "Not archived",
-        PA: "Partially archived",
-        AD: "Archived done",
-        AI: "Do not archive",
-        FA: "Failed archiving",
-      },
+      analysis: [],
+      extra_analysis: [],
+      missingConfig: {},
+      sequencerun: {},
+      analysisStatusName,
+      assignedSamplesheetStatusName,
+      runArchiveStatusName,
     };
+  },
+  computed: {
+    missingConfigExperiments() {
+      return Object.keys(this.missingConfig);
+    },
   },
   props: {
     sequencerun_id: {
@@ -130,13 +158,14 @@ export default {
   created() {
     this.getSequenceRun();
     this.getAnalsysis();
+    this.getMissingConfig();
   },
   methods: {
     async getSequenceRun() {
       await axios
         .get("api/v1/sequencerun/list/?run_id__in=" + this.sequencerun_id)
         .then((response) => {
-          this.sequencerun = response.data[0];
+          this.sequencerun = response.data.results[0];
         })
         .catch((error) => console.log(error));
     },
@@ -144,7 +173,20 @@ export default {
       await axios
         .get("api/v1/sequencerun/analysis/" + this.sequencerun_id + "/")
         .then((response) => {
-          this.analyzes = response.data;
+          this.analysis = response.data.analysis;
+          this.extra_analysis = response.data.extra_analysis;
+        })
+        .catch((error) => console.log(error));
+    },
+    async getMissingConfig() {
+      await axios
+        .get(
+          "api/v1/sequencerun/missing-bioinformatic-config/" +
+            this.sequencerun_id +
+            "/"
+        )
+        .then((response) => {
+          this.missingConfig = response.data;
         })
         .catch((error) => console.log(error));
     },

@@ -130,9 +130,9 @@
           </div>
         </div>
       </div>
-      <!-- <div v-if="analysis_ws || analysis_pa">
+      <!-- <div v-if="analysis_ws || analysis_pd">
         <h1>Sequence not assigned analysis</h1>
-        <AnalysisTable analysis_status="WS,PA" />
+        <AnalysisTable analysis_status="WS,PD" />
       </div> -->
       <div v-if="failed_archive_count || analysis_fa">
         <h2>
@@ -227,8 +227,8 @@
               <h4>Analyzes</h4>
               <AnalysisTable analysis_status="RE,PR,AC" />
             </div>
-            <div v-if="partially_archived_count">
-              <h4>Archiving</h4>
+            <div v-if="archiving_count">
+              <h4>Partially archived</h4>
               <SequenceRunTable archive_status="PA" />
             </div>
           </div>
@@ -302,7 +302,10 @@ export default {
         .then((response) => {
           //console.log(response.data);
           this.archived_count = response.data.archive_count.AD;
-          this.partially_archived_count = response.data.archive_count.PA;
+          // "Being archived" isn't tracked per SequenceRun by the backend;
+          // PA (Partially archived) is the closest "in progress" signal
+          // the /statistics/counts/ endpoint actually exposes.
+          this.archiving_count = response.data.archive_count.PA;
           this.failed_archive_count = response.data.archive_count.FA;
           this.not_archived_count = response.data.archive_count.NA;
           this.analysis_ws = response.data.analysis_count.WS;
@@ -313,6 +316,8 @@ export default {
           this.analysis_ac = response.data.analysis_count.AC;
           this.analysis_dd = response.data.analysis_count.DD;
           this.analysis_fa = response.data.analysis_count.FA;
+          // analysis_count has no "PA" key (Analysis has no such status) -
+          // PD (Partial Demultiplexed) is what "Partial Sequenced" means here.
           this.analysis_pd = response.data.analysis_count.PD;
           this.assigned_analysis_as = response.data.assigned_analysis_count.AS;
           this.assigned_analysis_pa = response.data.assigned_analysis_count.PA;
