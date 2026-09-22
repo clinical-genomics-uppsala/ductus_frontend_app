@@ -21,7 +21,7 @@
           <td>{{ item.created_date }}</td>
           <td>{{ item.last_update }}</td>
           <td scope="col">
-            {{ analysis_status_name[item.status] }}
+            {{ analysisStatusName[item.status] }}
           </td>
         </tr>
       </tbody>
@@ -31,23 +31,14 @@
 
 <script>
 import axios from "axios";
+import { analysisStatusName } from "@/constants/statuses";
 
 export default {
   name: "AnalysisTable",
   data() {
     return {
       analysis: [],
-      analysis_status_name: {
-        WS: "Waiting for sequencing",
-        SC: "Sequencing completed",
-        WP: "Waiting for processing",
-        RE: "Reserved for processing",
-        PR: "Processing",
-        AC: "Analysis completed",
-        DD: "Data delivered",
-        FA: "Processing failed",
-        PD: "Partial demultiplexed",
-      },
+      analysisStatusName,
     };
   },
   props: {

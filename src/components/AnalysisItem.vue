@@ -37,7 +37,7 @@
             </p>
           </div>
           <div class="col-sm">
-            {{ analysis_status_name[analysis.status] }}
+            {{ analysisStatusName[analysis.status] }}
             <br />
             <p>
               <small>
@@ -49,7 +49,7 @@
         <hr />
         <div class="row">
           <div class="col-sm">
-            {{ archive_status_name[analysis.archive_status] }}
+            {{ analysisArchiveStatusName[analysis.archive_status] }}
             <br />
             <p>
               <small>
@@ -58,11 +58,31 @@
             </p>
           </div>
           <div class="col-sm">
-            {{ priority[analysis.priority] }}
+            {{ priorityName[analysis.priority] }}
             <br />
             <p>
               <small>
-                <strong>Priorty</strong>
+                <strong>Priority</strong>
+              </small>
+            </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm">
+            {{ demuxStatusName[analysis.demux_status] }}
+            <br />
+            <p>
+              <small>
+                <strong>Demultiplexing</strong>
+              </small>
+            </p>
+          </div>
+          <div class="col-sm">
+            {{ analysis.process_location }}
+            <br />
+            <p>
+              <small>
+                <strong>Process location</strong>
               </small>
             </p>
           </div>
@@ -106,46 +126,23 @@
 
 <script>
 import axios from "axios";
+import {
+  analysisStatusName,
+  analysisArchiveStatusName,
+  priorityName,
+  demuxStatusName,
+} from "@/constants/statuses";
 
 export default {
   name: "AnalysisItem",
   data() {
     return {
       api_address: process.env.VUE_APP_API_ADDRESS,
-      analysis: {
-        type: Object,
-      },
-      analysis_status_name: {
-        WS: "Waiting for sequencing",
-        SC: "Sequencing completed",
-        WP: "Waiting for processing",
-        RE: "Reserved for processing",
-        PR: "Processing",
-        AC: "Analysis completed",
-        DD: "Data delivered",
-        FA: "Processing failed",
-        PD: "Partial demultiplexed",
-      },
-      archive_status_name: {
-        AI: "Do not use for archiving",
-        WS: "Waiting for sequence data",
-        PS: "Partial sequenced data",
-        WA: "Waiting for archiving",
-        BA: "Being archived",
-        FA: "Failed archiving",
-        AD: "Archived done",
-      },
-      priority: {
-        "1-N": "Normal",
-        "0-L": "Low",
-        "2-H": "High",
-        "3-S": "Super urgent",
-      },
-      // archive_status: {
-      //   NA: "Not Archived",
-      //   BE: "Being Archived",
-      //   AC: "Archived",
-      // },
+      analysis: {},
+      analysisStatusName,
+      analysisArchiveStatusName,
+      priorityName,
+      demuxStatusName,
     };
   },
   props: {
@@ -162,7 +159,10 @@ export default {
       await axios
         .get("api/v1/analysis/tasks/?analysis_name__in=" + this.analysis_name)
         .then((response) => {
-          this.analysis = response.data[0];
+          const results = Array.isArray(response.data)
+            ? response.data
+            : response.data.results;
+          this.analysis = results[0];
         })
         .catch((error) => console.log(error));
     },
