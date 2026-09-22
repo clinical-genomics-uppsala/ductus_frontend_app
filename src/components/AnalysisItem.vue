@@ -159,7 +159,10 @@ export default {
       await axios
         .get("api/v1/analysis/tasks/?analysis_name__in=" + this.analysis_name)
         .then((response) => {
-          this.analysis = response.data.results[0];
+          const results = Array.isArray(response.data)
+            ? response.data
+            : response.data.results;
+          this.analysis = results[0];
         })
         .catch((error) => console.log(error));
     },

@@ -165,7 +165,10 @@ export default {
       await axios
         .get("api/v1/sequencerun/list/?run_id__in=" + this.sequencerun_id)
         .then((response) => {
-          this.sequencerun = response.data.results[0];
+          const results = Array.isArray(response.data)
+            ? response.data
+            : response.data.results;
+          this.sequencerun = results[0];
         })
         .catch((error) => console.log(error));
     },

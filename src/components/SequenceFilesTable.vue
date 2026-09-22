@@ -96,7 +96,9 @@ export default {
             this.sequencerun_id
         )
         .then((response) => {
-          this.sequence_samples = response.data.results;
+          this.sequence_samples = Array.isArray(response.data)
+            ? response.data
+            : response.data.results;
         })
         .catch((error) => console.log(error));
     },

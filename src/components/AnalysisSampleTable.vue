@@ -28,7 +28,7 @@
                 >
                   {{ sample.sample_id.sequence_run.run_id }}
                 </a>
-                <span v-else>—</span>
+                <span v-else>Not yet linked to a sequence run</span>
               </td>
               <td>{{ sample.settings }}</td>
               <td>
@@ -75,7 +75,9 @@ export default {
             this.analysis_name
         )
         .then((response) => {
-          this.analysis_samples = response.data.results;
+          this.analysis_samples = Array.isArray(response.data)
+            ? response.data
+            : response.data.results;
         })
         .catch((error) => console.log(error));
     },
