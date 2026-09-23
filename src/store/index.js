@@ -5,6 +5,8 @@ export default createStore({
     username: "",
     token: "",
     isAuthenticated: false,
+    // Status enums served by api/v1/choices/, loaded once via api/choices.js.
+    choices: null,
   },
   getters: {},
   mutations: {
@@ -25,6 +27,9 @@ export default createStore({
     },
     setUsername(state, username) {
       state.username = username;
+    },
+    setChoices(state, choices) {
+      state.choices = choices;
     },
     removeToken(state) {
       state.token = "";
