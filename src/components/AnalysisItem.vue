@@ -37,7 +37,7 @@
             </p>
           </div>
           <div class="col-sm">
-            {{ analysisStatusName[analysis.status] }}
+            {{ statusLabels[analysis.status] }}
             <br />
             <p>
               <small>
@@ -49,7 +49,7 @@
         <hr />
         <div class="row">
           <div class="col-sm">
-            {{ analysisArchiveStatusName[analysis.archive_status] }}
+            {{ archiveStatusLabels[analysis.archive_status] }}
             <br />
             <p>
               <small>
@@ -58,31 +58,11 @@
             </p>
           </div>
           <div class="col-sm">
-            {{ priorityName[analysis.priority] }}
+            {{ priorityLabels[analysis.priority] }}
             <br />
             <p>
               <small>
-                <strong>Priority</strong>
-              </small>
-            </p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm">
-            {{ demuxStatusName[analysis.demux_status] }}
-            <br />
-            <p>
-              <small>
-                <strong>Demultiplexing</strong>
-              </small>
-            </p>
-          </div>
-          <div class="col-sm">
-            {{ analysis.process_location }}
-            <br />
-            <p>
-              <small>
-                <strong>Process location</strong>
+                <strong>Priorty</strong>
               </small>
             </p>
           </div>
@@ -126,23 +106,16 @@
 
 <script>
 import axios from "axios";
-import {
-  analysisStatusName,
-  analysisArchiveStatusName,
-  priorityName,
-  demuxStatusName,
-} from "@/constants/statuses";
+import { choiceLabels, ensureChoices } from "@/api/choices";
 
 export default {
   name: "AnalysisItem",
   data() {
     return {
       api_address: process.env.VUE_APP_API_ADDRESS,
-      analysis: {},
-      analysisStatusName,
-      analysisArchiveStatusName,
-      priorityName,
-      demuxStatusName,
+      analysis: {
+        type: Object,
+      },
     };
   },
   props: {
@@ -151,7 +124,24 @@ export default {
       required: true,
     },
   },
+  computed: {
+    choices() {
+      return this.$store.state.choices;
+    },
+    statusLabels() {
+      return choiceLabels(this.choices, "analysis", "status");
+    },
+    priorityLabels() {
+      return choiceLabels(this.choices, "analysis", "priority");
+    },
+    archiveStatusLabels() {
+      return choiceLabels(this.choices, "analysis", "archive_status");
+    },
+  },
   created() {
+    ensureChoices(this.$store).catch((error) =>
+      console.debug("Could not load choices: " + error)
+    );
     this.getAnalsysis();
   },
   methods: {
@@ -159,10 +149,7 @@ export default {
       await axios
         .get("api/v1/analysis/tasks/?analysis_name__in=" + this.analysis_name)
         .then((response) => {
-          const results = Array.isArray(response.data)
-            ? response.data
-            : response.data.results;
-          this.analysis = results[0];
+          this.analysis = response.data[0];
         })
         .catch((error) => console.log(error));
     },
