@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/compare/v0.5.1...v0.6.0) (2026-10-15)
+
+
+### Features
+
+* add filterable, paginated tables to the dashboard ([0d40e2b](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/commit/0d40e2be61eea6e38cdfc7893b04f0222bd2911d))
+
 ### [0.5.1](https://www.github.com/clinical-genomics-uppsala/ductus_frontend_app/compare/v0.5.0...v0.5.1) (2026-09-22)
 
 
