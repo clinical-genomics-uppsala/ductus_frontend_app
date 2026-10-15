@@ -124,11 +124,7 @@
 
 <script>
 import axios from "axios";
-import {
-  analysisStatusName,
-  assignedSamplesheetStatusName,
-  runArchiveStatusName,
-} from "@/constants/statuses";
+import { choiceLabels, ensureChoices } from "@/api/choices";
 
 export default {
   name: "SequenceRunItem",
@@ -139,14 +135,27 @@ export default {
       extra_analysis: [],
       missingConfig: {},
       sequencerun: {},
-      analysisStatusName,
-      assignedSamplesheetStatusName,
-      runArchiveStatusName,
     };
   },
   computed: {
     missingConfigExperiments() {
       return Object.keys(this.missingConfig);
+    },
+    choices() {
+      return this.$store.state.choices;
+    },
+    analysisStatusName() {
+      return choiceLabels(this.choices, "analysis", "status");
+    },
+    assignedSamplesheetStatusName() {
+      return choiceLabels(
+        this.choices,
+        "sequence_run",
+        "assigned_bionformatic_samplesheet_status"
+      );
+    },
+    runArchiveStatusName() {
+      return choiceLabels(this.choices, "sequence_run", "archive_status");
     },
   },
   props: {
@@ -156,6 +165,9 @@ export default {
     },
   },
   created() {
+    ensureChoices(this.$store).catch((error) =>
+      console.debug("Could not load choices: " + error)
+    );
     this.getSequenceRun();
     this.getAnalsysis();
     this.getMissingConfig();

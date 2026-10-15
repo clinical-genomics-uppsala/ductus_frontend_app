@@ -16,47 +16,34 @@
       </h1>
       <div class="collapse show" id="statistictables">
         <div class="card card-body">
+          <p class="text-muted small text-start mb-2">
+            Select a number to filter the tables below.
+          </p>
+
           <table class="table">
             <thead>
               <tr>
-                <th scope="col" colspan="7">Processing Status</th>
+                <th scope="col" :colspan="analysisTiles.length">
+                  Processing Status
+                </th>
               </tr>
               <tr>
-                <th scope="col">Waiting for Sequencing</th>
-                <th scope="col">Sequencing Completed</th>
-                <th scope="col">Unprocessed</th>
-                <th scope="col">Reserved</th>
-                <th scope="col">Processing</th>
-                <th scope="col">Done</th>
-                <th scope="col">Delivered</th>
+                <th v-for="tile in analysisTiles" :key="tile.label" scope="col">
+                  {{ tile.label }}
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>{{ analysis_ws }}</td>
-                <td>{{ analysis_sc }}</td>
-                <td>{{ analysis_wp }}</td>
-                <td>{{ analysis_re }}</td>
-                <td>{{ analysis_pr }}</td>
-                <td>{{ analysis_ac }}</td>
-                <td>{{ analysis_dd }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <table v-if="analysis_fa || analysis_pd" class="table">
-            <thead>
-              <tr>
-                <th scope="col" colspan="6">Processing Failures</th>
-              </tr>
-              <tr>
-                <th scope="col">Failed</th>
-                <th scope="col" colspan="5">Partial Demultiplexed</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{{ analysis_fa }}</td>
-                <td>{{ analysis_pd }}</td>
+                <td v-for="tile in analysisTiles" :key="tile.label">
+                  <button
+                    class="btn btn-link p-0"
+                    type="button"
+                    @click="applyFilter('a_status', tile.codes.join(','))"
+                  >
+                    {{ tileCount(analysis_count, tile.codes) }}
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -64,194 +51,76 @@
           <table class="table">
             <thead>
               <tr>
-                <th scope="col" colspan="4">Archive Status</th>
+                <th scope="col" :colspan="archiveTiles.length">
+                  Archive Status
+                </th>
               </tr>
               <tr>
-                <th scope="col">Done</th>
-                <th scope="col">Not Archived</th>
-                <th scope="col">Partially Archived</th>
-                <th scope="col">Failed</th>
+                <th v-for="tile in archiveTiles" :key="tile.label" scope="col">
+                  {{ tile.label }}
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>{{ archived_count }}</td>
-                <td>{{ not_archived_count }}</td>
-                <td>{{ partially_archived_count }}</td>
-                <td>{{ failed_archive_count }}</td>
+                <td v-for="tile in archiveTiles" :key="tile.label">
+                  <button
+                    class="btn btn-link p-0"
+                    type="button"
+                    @click="applyFilter('sr_archive', tile.codes.join(','))"
+                  >
+                    {{ tileCount(archive_count, tile.codes) }}
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
 
-          <table
-            v-if="assigned_analysis_na || assigned_analysis_pa"
-            class="table"
-          >
+          <table class="table">
             <thead>
               <tr>
-                <th scope="col" colspan="4">Analysis assigned</th>
+                <th scope="col" :colspan="samplesheetTiles.length">
+                  Analysis assigned
+                </th>
               </tr>
               <tr>
-                <th scope="col">Assigned</th>
-                <th scope="col">Partially assigned</th>
-                <th scope="col">Not assigned</th>
+                <th
+                  v-for="tile in samplesheetTiles"
+                  :key="tile.label"
+                  scope="col"
+                >
+                  {{ tile.label }}
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>{{ assigned_analysis_as }}</td>
-                <td>{{ assigned_analysis_pa }}</td>
-                <td>{{ assigned_analysis_na }}</td>
+                <td v-for="tile in samplesheetTiles" :key="tile.label">
+                  <button
+                    class="btn btn-link p-0"
+                    type="button"
+                    @click="applyFilter('sr_samplesheet', tile.codes.join(','))"
+                  >
+                    {{ tileCount(assigned_analysis_count, tile.codes) }}
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
+
       <br />
       <hr class="hr" />
-      <h1>Sequence Runs and Analyzes</h1>
-      <div v-if="analysis_ws || analysis_pd">
-        <h2>
-          Waiting for fastq-files
-          <button
-            class="btn btn-link"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#waitintforfastq"
-            aria-expanded="true"
-            aria-controls="waitintforfastq"
-          >
-            +/-
-          </button>
-        </h2>
-        <div class="collapse show" id="waitintforfastq">
-          <div class="card card-body">
-            <AnalysisTable analysis_status="WS,PD" />
-          </div>
-        </div>
-      </div>
-      <!-- <div v-if="analysis_ws || analysis_pd">
-        <h1>Sequence not assigned analysis</h1>
-        <AnalysisTable analysis_status="WS,PD" />
-      </div> -->
-      <div v-if="failed_archive_count || analysis_fa">
-        <h2>
-          Failures
-          <button
-            class="btn btn-link"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#failures"
-            aria-expanded="true"
-            aria-controls="failures"
-          >
-            +/-
-          </button>
-        </h2>
-        <div class="collapse show" id="failures">
-          <div class="card card-body">
-            <h4 v-if="failed_archive_count">Archiving</h4>
-            <SequenceRunTable archive_status="FA" v-if="failed_archive_count" />
-            <h4 v-if="analysis_fa">Analyzes</h4>
-            <AnalysisTable v-if="analysis_fa" analysis_status="FA" />
-          </div>
-        </div>
+
+      <h1>Analyses</h1>
+      <div class="card card-body">
+        <AnalysisTable />
       </div>
 
-      <div
-        v-if="
-          not_archived_count ||
-          analysis_ws ||
-          analysis_wp ||
-          analysis_sc ||
-          analysis_pd
-        "
-      >
-        <h2>
-          Not handled
-          <button
-            class="btn btn-link"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#notHandled"
-            aria-expanded="true"
-            aria-controls="notHandled"
-          >
-            +/-
-          </button>
-        </h2>
-        <div class="collapse show" id="notHandled">
-          <div class="card card-body">
-            <h4 v-if="assigned_analysis_pa || assigned_analysis_na">
-              Not/Partially assigned bioinformatic samplesheet
-            </h4>
-            <SequenceRunTable
-              assigned_analysis="NA,PA"
-              v-if="assigned_analysis_pa || assigned_analysis_na"
-            />
-            <h4 v-if="not_archived_count">Not archived</h4>
-            <SequenceRunTable archive_status="NA" v-if="not_archived_count" />
-            <h4 v-if="analysis_wp || analysis_ws || analysis_sc || analysis_pd">
-              Analyzes
-            </h4>
-            <AnalysisTable
-              v-if="analysis_wp || analysis_ws || analysis_sc || analysis_pd"
-              title="Analysis"
-              analysis_status="WS,SC,WP,PD"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div
-        v-if="
-          analysis_re || analysis_pr || analysis_ac || partially_archived_count
-        "
-      >
-        <h2>
-          Process running
-          <button
-            class="btn btn-link"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#processing"
-            aria-expanded="true"
-            aria-controls="processing"
-          >
-            +/-
-          </button>
-        </h2>
-        <div class="collapse show" id="processing">
-          <div class="card card-body">
-            <div v-if="analysis_re || analysis_pr || analysis_ac">
-              <h4>Analyzes</h4>
-              <AnalysisTable analysis_status="RE,PR,AC" />
-            </div>
-            <div v-if="archiving_count">
-              <h4>Partially archived</h4>
-              <SequenceRunTable archive_status="PA" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <h2>
-        Delivered
-        <button
-          class="btn btn-link"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#delivered"
-          aria-expanded="true"
-          aria-controls="delivered"
-        >
-          +/-
-        </button>
-      </h2>
-      <div class="collapse show" id="delivered">
-        <div class="card card-body">
-          <AnalysisTable analysis_status="DD" />
-        </div>
+      <h1>Sequence Runs</h1>
+      <div class="card card-body mb-4">
+        <SequenceRunTable />
       </div>
     </div>
   </div>
@@ -270,58 +139,62 @@ export default {
   },
   data() {
     return {
-      sequence_runs: [],
-      analysis: [],
-      archive: [],
-      analysis_ws: 0,
-      analysis_sc: 0,
-      analysis_wp: 0,
-      analysis_re: 0,
-      analysis_pd: 0,
-      analysis_pr: 0,
-      analysis_ac: 0,
-      analysis_dd: 0,
-      analysis_fa: 0,
-      assigned_analysis_as: 0,
-      assigned_analysis_pa: 0,
-      assigned_analysis_na: 0,
-      archived_count: 0,
-      partially_archived_count: 0,
-      failed_archive_count: 0,
-      not_archived_count: 0,
-      analysis_delivered: [],
+      analysis_count: {},
+      archive_count: {},
+      assigned_analysis_count: {},
+      // Codes come from the backend TextChoices; CountStatisticsV reports
+      // these nine analysis statuses.
+      analysisTiles: [
+        { label: "Waiting for sequencing", codes: ["WS"] },
+        { label: "Sequencing completed", codes: ["SC"] },
+        { label: "Partial demultiplexed", codes: ["PD"] },
+        { label: "Waiting for processing", codes: ["WP"] },
+        { label: "Reserved", codes: ["RE"] },
+        { label: "Processing", codes: ["PR"] },
+        { label: "Completed", codes: ["AC"] },
+        { label: "Delivered", codes: ["DD"] },
+        { label: "Failed", codes: ["FA"] },
+      ],
+      archiveTiles: [
+        { label: "Archived", codes: ["AD"] },
+        { label: "Partially archived", codes: ["PA"] },
+        { label: "Not archived", codes: ["NA"] },
+        { label: "Failed", codes: ["FA"] },
+      ],
+      samplesheetTiles: [
+        { label: "Assigned", codes: ["AS"] },
+        { label: "Partially assigned", codes: ["PA"] },
+        { label: "Not assigned", codes: ["NA"] },
+      ],
     };
   },
   created() {
     this.getStatistics();
   },
   methods: {
+    tileCount(counts, codes) {
+      return codes.reduce((total, code) => total + (counts[code] || 0), 0);
+    },
+    // The tables read their state from the route query, so setting it here is
+    // all that's needed to filter them.
+    applyFilter(key, value) {
+      const query = { ...this.$route.query };
+      if (value) {
+        query[key] = value;
+      } else {
+        delete query[key];
+      }
+      delete query[key.startsWith("a_") ? "a_page" : "sr_page"];
+      this.$router.replace({ query }).catch(() => {});
+    },
     async getStatistics() {
       await axios
         .get("api/v1/statistics/counts/")
         .then((response) => {
-          //console.log(response.data);
-          this.archived_count = response.data.archive_count.AD;
-          // "Being archived" isn't tracked per SequenceRun by the backend;
-          // PA (Partially archived) is the closest "in progress" signal
-          // the /statistics/counts/ endpoint actually exposes.
-          this.archiving_count = response.data.archive_count.PA;
-          this.failed_archive_count = response.data.archive_count.FA;
-          this.not_archived_count = response.data.archive_count.NA;
-          this.analysis_ws = response.data.analysis_count.WS;
-          this.analysis_sc = response.data.analysis_count.SC;
-          this.analysis_wp = response.data.analysis_count.WP;
-          this.analysis_re = response.data.analysis_count.RE;
-          this.analysis_pr = response.data.analysis_count.PR;
-          this.analysis_ac = response.data.analysis_count.AC;
-          this.analysis_dd = response.data.analysis_count.DD;
-          this.analysis_fa = response.data.analysis_count.FA;
-          // analysis_count has no "PA" key (Analysis has no such status) -
-          // PD (Partial Demultiplexed) is what "Partial Sequenced" means here.
-          this.analysis_pd = response.data.analysis_count.PD;
-          this.assigned_analysis_as = response.data.assigned_analysis_count.AS;
-          this.assigned_analysis_pa = response.data.assigned_analysis_count.PA;
-          this.assigned_analysis_na = response.data.assigned_analysis_count.NA;
+          this.analysis_count = response.data.analysis_count || {};
+          this.archive_count = response.data.archive_count || {};
+          this.assigned_analysis_count =
+            response.data.assigned_analysis_count || {};
         })
         .catch((error) => console.log(error));
     },
